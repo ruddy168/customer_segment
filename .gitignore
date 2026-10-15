@@ -1,23 +1,23 @@
-#Python
+# Python
 __pycache__/
 *.py[cod]
 *.pyo
 *.pyd
 
-# Virtual Environment
+# Virtual environments
 .venv/
 venv/
 env/
 
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
 # Jupyter
 .ipynb_checkpoints/
 
-# Environment
-.env
-.env.*
-
-
-# OS Files
+# OS files
 .DS_Store
 Thumbs.db
 

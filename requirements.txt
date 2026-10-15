@@ -1,7 +1,22 @@
+﻿# Backend API
+fastapi
+uvicorn[standard]
+sqlalchemy
+psycopg[binary]
+python-dotenv
+google-genai
+
+# Data processing and machine learning
 pandas
 numpy
-openpyxl
+scikit-learn
 matplotlib
 seaborn
-scikit-learn
+openpyxl
+
+# Notebook development
 jupyter
+
+# Automated testing
+pytest
+httpx

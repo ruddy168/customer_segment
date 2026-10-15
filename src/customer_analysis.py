@@ -3,6 +3,7 @@ import pandas as pd
 
 from sklearn.cluster import KMeans
 from sklearn.preprocessing import StandardScaler
+from sklearn.metrics import silhouette_score, davies_bouldin_score
 
 
 def calculate_rfm(df, analysis_date=None):
@@ -69,49 +70,35 @@ def classify_activity(recency):
     else:
         return "Inactive"
 
+
 def create_customer_segments(rfm, n_clusters=5, random_state=42):
-    """
-    Segment customers using K-Means clustering on RFM metrics.
-
-    Parameters
-    ----------
-    rfm : pandas.DataFrame
-        Customer-level RFM dataset containing:
-        Recency, Frequency, and Monetary.
-
-    n_clusters : int, default=5
-        Number of customer segments.
-
-    random_state : int, default=42
-        Random seed for reproducibility.
-
-    Returns
-    -------
-    pandas.DataFrame
-        RFM dataset with a Cluster column.
-    """
-
     rfm_segmented = rfm.copy()
 
-    # Log-transform RFM metrics to reduce skewness
+    # Log-transform RFM metrics
     rfm_log = rfm_segmented[
         ["Recency", "Frequency", "Monetary"]
     ].copy()
-
     rfm_log = np.log1p(rfm_log)
 
-    # Standardize the transformed metrics
+    # Standardize features
     scaler = StandardScaler()
-
     rfm_scaled = scaler.fit_transform(rfm_log)
 
-    # Apply K-Means clustering
+    # Train K-Means
     kmeans = KMeans(
         n_clusters=n_clusters,
         random_state=random_state,
         n_init=10
     )
-
     rfm_segmented["Cluster"] = kmeans.fit_predict(rfm_scaled)
+
+    # Evaluate clustering quality
+    labels = rfm_segmented["Cluster"]
+
+    silhouette = silhouette_score(rfm_scaled, labels)
+    davies_bouldin = davies_bouldin_score(rfm_scaled, labels)
+
+    print(f"Silhouette Score: {silhouette:.4f}")
+    print(f"Davies-Bouldin Score: {davies_bouldin:.4f}")
 
     return rfm_segmented
